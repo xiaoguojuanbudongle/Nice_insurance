@@ -1,40 +1,37 @@
-# NICE Insurance Management System - Project Overview
+# NICE Insurance Management System
 
-## 1. General Description
-This project involves creating a web-based user interface for a Database schema designed to manage insurance services (Auto and Home). The system must support registration, login, and full CRUD (Create, Read, Update, Delete) operations for various business activities.
+## Project Overview
+The **NICE Insurance Management System** is a comprehensive, web-based platform designed to streamline insurance operations for both automotive and residential properties. The system provides a secure and intuitive interface for managing the end-to-end lifecycle of insurance policies, from customer registration and policy issuance to automated invoicing and payment processing.
 
-## 2. Core Requirements
-- **Web UI:** A functional and neat interface accessible via standard web browsers.
-- **User Roles:** Distinct authorization for **Customers** and **Employees**.
-- **Authentication:** Secure login and registration.
-- **Backend:** A relational database (PostgreSQL/Supabase used in this implementation).
-- **APIs:** Designed with a **RESTful** style.
+## Key Features
 
-## 3. Technical & Security Specifications
-- **Data Security:** Passwords must be encrypted before being stored in the database.
-- **Attack Prevention:** Implementation of measures against **SQL Injection** (using prepared statements or stored procedures) and **Cross-Site Scripting (XSS)**.
-- **Concurrency Control:** Define appropriate transactions to handle multiple simultaneous users and prevent deadlocks.
+### 1. Dual-Role Portal
+- **Customer Portal:** Allows users to register, log in, view their active Auto and Home policies, check billing status, and manage payments.
+- **Employee Dashboard:** Provides staff with administrative tools to manage customer records, approve/update policies, and oversee financial transactions.
 
-## 4. Deliverables
-### A. Project Demo (80 Points)
-- A live demonstration of the system's features and source code.
-- Must use interesting test data to showcase functionality.
+### 2. Insurance Management
+- **Auto Insurance:** Track vehicle details (VIN, make, model), associated drivers, and policy coverage.
+- **Home Insurance:** Manage property details including purchase value, area, safety features (fire notification, security systems), and policy specifics.
 
-### B. Project Report (20 Points)
-- **Executive Summary:** Business case and approach.
-- **Design Docs:** Logical and Relational models, DDL code, and table list.
-- **System Details:** Software/languages used and security features implemented.
-- **Business Analysis (6 Mandatory SQLs):**
-    1. Table join with at least 3 tables.
-    2. Multi-row subquery.
-    3. Correlated subquery.
-    4. SET operator query.
-    5. Query with in-line view or WITH clause.
-    6. TOP-N/BOTTOM-N query.
+### 3. Financial Module
+- **Automated Invoicing:** Generates invoices for both Auto and Home policies with due date tracking.
+- **Payment Processing:** Supports multiple payment methods (Credit, Debit, PayPal, Check) and handles installment payments.
 
-## 5. Extra Credit (Up to 6%)
-- **Modern Architecture:** Use of Cache, Containers, or **Serverless** (Vercel) for high availability.
-- **Performance:** Strategic indexing with analytical proof of improvement.
-- **Visualization:** Data analysis presented through graphs and charts.
-- **Advanced Security:** Password reset verification and audit history tables.
+### 4. Advanced Data Analytics
+The system integrates complex business intelligence queries to provide insights, such as:
+- Multi-table performance analysis.
+- Customer demographic distribution.
+- High-value policy identification and payment trend analysis.
 
+## Technical Architecture
+
+- **Frontend:** Built with **Next.js (React)** for a modern, responsive user experience.
+- **Backend & Database:** Powered by **PostgreSQL (via Supabase)**, ensuring robust relational data integrity and high performance.
+- **Deployment:** Hosted on **Vercel** using a **Serverless** architecture to ensure high availability and scalability.
+- **API Design:** Implemented following **RESTful** principles for clean and efficient communication between the client and server.
+
+## Security & Reliability
+
+- **Data Privacy:** Sensitive information, including user passwords, is fully encrypted before storage.
+- **Protection:** Built-in safeguards against common web vulnerabilities like **SQL Injection** and **Cross-Site Scripting (XSS)**.
+- **Concurrency:** Advanced transaction management to support simultaneous users and prevent database deadlocks.
