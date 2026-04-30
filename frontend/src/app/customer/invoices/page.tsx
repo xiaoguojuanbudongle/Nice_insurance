@@ -28,7 +28,7 @@ export default function CustomerInvoicesPage() {
 
   async function payInvoice(invoice: Invoice) {
     const params = {
-      p_invoice_id: invoice.invoice_id,
+      p_invoice_id: hasSupabaseEnv ? Number(invoice.invoice_id) : invoice.invoice_id,
       p_pay_method: "Credit"
     };
     const rpcError = await runRpc(invoice.source === "home" ? "pay_home_invoice" : "pay_auto_invoice", params);

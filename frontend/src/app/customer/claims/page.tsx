@@ -37,7 +37,7 @@ export default function CustomerClaimsPage() {
     event.preventDefault();
     setMessage(null);
     const params = {
-      p_policy_id: policyId,
+      p_policy_id: hasSupabaseEnv ? Number(policyId) : policyId,
       p_claim_amount: Number(claimAmount),
       p_description: description
     };

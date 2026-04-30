@@ -31,7 +31,7 @@ export default function EmployeeClaimsPage() {
 
   async function runAction(newStatus: ClaimAction, claimId: string) {
     const params = {
-      p_claim_id: claimId,
+      p_claim_id: hasSupabaseEnv ? Number(claimId) : claimId,
       p_new_status: newStatus,
       p_note: note
     };

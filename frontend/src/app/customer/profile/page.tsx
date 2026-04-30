@@ -34,16 +34,10 @@ export default function CustomerProfilePage() {
     const { error: updateError } = await supabase
       .from("hwl_customer")
       .update({
-        cust_fname: customer.first_name,
-        cust_lname: customer.last_name,
         street: customer.street,
         city: customer.city,
         state: customer.state,
         zip_code: customer.zip_code,
-        gender: customer.gender,
-        marital_status: customer.marital_status,
-        cust_type: customer.cust_type,
-        email: customer.email,
         phone: customer.phone
       })
       .eq("cust_id", customer.customer_id);
@@ -65,17 +59,17 @@ export default function CustomerProfilePage() {
               <div className="form-row">
                 <label>
                   First name
-                  <input value={customer.first_name} onChange={(event) => update({ first_name: event.target.value })} />
+                  <input value={customer.first_name} disabled />
                 </label>
                 <label>
                   Last name
-                  <input value={customer.last_name} onChange={(event) => update({ last_name: event.target.value })} />
+                  <input value={customer.last_name} disabled />
                 </label>
               </div>
               <div className="form-row">
                 <label>
                   Email
-                  <input type="email" value={customer.email} onChange={(event) => update({ email: event.target.value })} />
+                  <input type="email" value={customer.email} disabled />
                 </label>
                 <label>
                   Phone
@@ -103,7 +97,7 @@ export default function CustomerProfilePage() {
                 </label>
                 <label>
                   Customer type
-                  <select value={customer.cust_type ?? ""} onChange={(event) => update({ cust_type: event.target.value })}>
+                  <select value={customer.cust_type ?? ""} disabled>
                     <option value="">Not set</option>
                     <option value="A">Auto</option>
                     <option value="H">Home</option>
@@ -114,7 +108,7 @@ export default function CustomerProfilePage() {
               <div className="form-row">
                 <label>
                   Gender
-                  <select value={customer.gender ?? ""} onChange={(event) => update({ gender: event.target.value || null })}>
+                  <select value={customer.gender ?? ""} disabled>
                     <option value="">Not provided</option>
                     <option value="M">Male</option>
                     <option value="F">Female</option>
@@ -122,7 +116,7 @@ export default function CustomerProfilePage() {
                 </label>
                 <label>
                   Marital status
-                  <select value={customer.marital_status ?? ""} onChange={(event) => update({ marital_status: event.target.value })}>
+                  <select value={customer.marital_status ?? ""} disabled>
                     <option value="">Not set</option>
                     <option value="M">Married</option>
                     <option value="S">Single</option>

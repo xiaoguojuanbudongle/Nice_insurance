@@ -377,6 +377,28 @@ export async function mockUpdateCustomer(update: Customer) {
   writeStore(store);
 }
 
+export async function mockCreateCustomer(input: Omit<Customer, "customer_id" | "user_id" | "full_name" | "address" | "date_of_birth" | "created_at">) {
+  const store = readStore();
+  const customer: Customer = {
+    ...input,
+    customer_id: `customer-${crypto.randomUUID()}`,
+    user_id: "",
+    full_name: `${input.first_name} ${input.last_name}`.trim(),
+    address: [input.street, input.city, input.state, input.zip_code].filter(Boolean).join(", ") || null,
+    date_of_birth: null,
+    created_at: new Date().toISOString()
+  };
+  store.customers.unshift(customer);
+  writeStore(store);
+  return customer;
+}
+
+export async function mockDeleteCustomer(customerId: string) {
+  const store = readStore();
+  store.customers = store.customers.filter((customer) => customer.customer_id !== customerId);
+  writeStore(store);
+}
+
 export async function mockListCustomerPolicies() {
   const store = readStore();
   const customer = currentCustomer(store);
