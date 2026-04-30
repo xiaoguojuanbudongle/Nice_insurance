@@ -40,6 +40,7 @@ employee1@example.com / Password123!
 Frontend can call these Supabase RPC functions:
 
 ```text
+update_own_profile(p_full_name, p_phone)
 submit_auto_claim(p_policy_id, p_claim_amount, p_description)
 submit_home_claim(p_policy_id, p_claim_amount, p_description)
 review_claim(p_claim_id, p_new_status, p_note)
@@ -71,5 +72,6 @@ Check
 - Do not expose `SUPABASE_SERVICE_ROLE_KEY` in frontend code.
 - Frontend should only use the public anon/publishable key.
 - RLS enforces real authorization in the database.
+- Users cannot update their own `role`; profile edits should use `update_own_profile`.
+- Customers can view their own vehicle/home data, but employee users manage vehicle/home writes.
 - RPC functions handle multi-step operations such as claim submission and invoice payment.
-

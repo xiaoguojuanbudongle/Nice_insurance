@@ -262,6 +262,36 @@ as $$
   select emp_id from public.hwl_employee where user_id = auth.uid()
 $$;
 
+create or replace function public.update_own_profile(
+  p_full_name text default null,
+  p_phone text default null
+)
+returns public.hwl_app_profile
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_profile public.hwl_app_profile%rowtype;
+begin
+  if auth.uid() is null then
+    raise exception 'Authentication required';
+  end if;
+
+  update public.hwl_app_profile
+  set full_name = coalesce(p_full_name, full_name),
+      phone = coalesce(p_phone, phone)
+  where user_id = auth.uid()
+  returning * into v_profile;
+
+  if not found then
+    raise exception 'Profile not found';
+  end if;
+
+  return v_profile;
+end;
+$$;
+
 create or replace function public.handle_new_auth_user()
 returns trigger
 language plpgsql
@@ -342,11 +372,6 @@ to authenticated
 using (user_id = auth.uid() or public.is_employee());
 
 drop policy if exists "profile_update_own" on public.hwl_app_profile;
-create policy "profile_update_own"
-on public.hwl_app_profile for update
-to authenticated
-using (user_id = auth.uid())
-with check (user_id = auth.uid());
 
 drop policy if exists "employee_select_employee" on public.hwl_employee;
 create policy "employee_select_employee"
@@ -366,6 +391,18 @@ on public.hwl_customer for update
 to authenticated
 using (user_id = auth.uid() or public.is_employee())
 with check (user_id = auth.uid() or public.is_employee());
+
+drop policy if exists "customer_employee_insert" on public.hwl_customer;
+create policy "customer_employee_insert"
+on public.hwl_customer for insert
+to authenticated
+with check (public.is_employee());
+
+drop policy if exists "customer_employee_delete" on public.hwl_customer;
+create policy "customer_employee_delete"
+on public.hwl_customer for delete
+to authenticated
+using (public.is_employee());
 
 drop policy if exists "auto_policy_select_own_or_employee" on public.hwl_auto_policy;
 create policy "auto_policy_select_own_or_employee"
@@ -489,25 +526,24 @@ using (
 );
 
 drop policy if exists "vehicle_own_or_employee_write" on public.hwl_vehicle;
-create policy "vehicle_own_or_employee_write"
-on public.hwl_vehicle for all
+drop policy if exists "vehicle_employee_insert" on public.hwl_vehicle;
+create policy "vehicle_employee_insert"
+on public.hwl_vehicle for insert
 to authenticated
-using (
-  public.is_employee()
-  or exists (
-    select 1 from public.hwl_auto_policy p
-    where p.policy_id = hwl_vehicle.policy_id
-      and p.cust_id = public.current_cust_id()
-  )
-)
-with check (
-  public.is_employee()
-  or exists (
-    select 1 from public.hwl_auto_policy p
-    where p.policy_id = hwl_vehicle.policy_id
-      and p.cust_id = public.current_cust_id()
-  )
-);
+with check (public.is_employee());
+
+drop policy if exists "vehicle_employee_update" on public.hwl_vehicle;
+create policy "vehicle_employee_update"
+on public.hwl_vehicle for update
+to authenticated
+using (public.is_employee())
+with check (public.is_employee());
+
+drop policy if exists "vehicle_employee_delete" on public.hwl_vehicle;
+create policy "vehicle_employee_delete"
+on public.hwl_vehicle for delete
+to authenticated
+using (public.is_employee());
 
 drop policy if exists "driver_select_own_or_employee" on public.hwl_driver;
 create policy "driver_select_own_or_employee"
@@ -538,25 +574,24 @@ using (
 );
 
 drop policy if exists "home_own_or_employee_write" on public.hwl_home;
-create policy "home_own_or_employee_write"
-on public.hwl_home for all
+drop policy if exists "home_employee_insert" on public.hwl_home;
+create policy "home_employee_insert"
+on public.hwl_home for insert
 to authenticated
-using (
-  public.is_employee()
-  or exists (
-    select 1 from public.hwl_home_policy p
-    where p.policy_id = hwl_home.policy_id
-      and p.cust_id = public.current_cust_id()
-  )
-)
-with check (
-  public.is_employee()
-  or exists (
-    select 1 from public.hwl_home_policy p
-    where p.policy_id = hwl_home.policy_id
-      and p.cust_id = public.current_cust_id()
-  )
-);
+with check (public.is_employee());
+
+drop policy if exists "home_employee_update" on public.hwl_home;
+create policy "home_employee_update"
+on public.hwl_home for update
+to authenticated
+using (public.is_employee())
+with check (public.is_employee());
+
+drop policy if exists "home_employee_delete" on public.hwl_home;
+create policy "home_employee_delete"
+on public.hwl_home for delete
+to authenticated
+using (public.is_employee());
 
 drop policy if exists "claim_select_own_or_employee" on public.hwl_claim;
 create policy "claim_select_own_or_employee"
@@ -834,4 +869,6 @@ $$;
 
 grant usage on schema public to anon, authenticated;
 grant select, insert, update on all tables in schema public to authenticated;
+grant delete on public.hwl_customer, public.hwl_vehicle, public.hwl_home to authenticated;
+grant usage, select on all sequences in schema public to authenticated;
 grant execute on all functions in schema public to authenticated;
